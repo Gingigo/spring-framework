@@ -54,6 +54,11 @@ import org.springframework.lang.Nullable;
  * @since 16 April 2001
  * @see HierarchicalBeanFactory
  * @see BeanFactoryUtils
+ *
+ *
+ * 	类名：可列表化的BeanFactory
+ * 	功能：BeanFactory 都是单个的获取bean，而这个接口ListableBeanFactory 可以获取多个bean，
+ * 		就是对原有的 BeanFactory 的扩展。
  */
 public interface ListableBeanFactory extends BeanFactory {
 

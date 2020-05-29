@@ -80,6 +80,8 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	 * from the given XML file and automatically refreshing the context.
 	 * @param configLocation resource location
 	 * @throws BeansException if context creation failed
+   	 * 
+   	 * 功能：classPathXml 入口
 	 */
 	public ClassPathXmlApplicationContext(String configLocation) throws BeansException {
 		this(new String[] {configLocation}, true, null);
@@ -133,14 +135,19 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	 * @param parent the parent context
 	 * @throws BeansException if context creation failed
 	 * @see #refresh()
+	 * 
+	 * 	功能：classPathXml 入口
+	 * 	运用：装饰者模式
 	 */
 	public ClassPathXmlApplicationContext(
 			String[] configLocations, boolean refresh, @Nullable ApplicationContext parent)
 			throws BeansException {
 
 		super(parent);
+		// 设置 Bean 配置信息的定位路径
 		setConfigLocations(configLocations);
 		if (refresh) {
+			// spring IOC 开始加载 Bean
 			refresh();
 		}
 	}

@@ -30,6 +30,14 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 07.07.2003
  * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#setParentBeanFactory
+ *
+ *
+ * 	类名：分层的BeanFactory
+ * 	功能：让 BeanFactory拥有分层(阶级)的功能。
+ * 	注意：该接口指定要了查找父级 BeanFactory，并没有定义传入父级 BeanFactory，
+ * 		其传入的代码是是在 ConfigurableBeanFactory 接口中的 setParentBeanFactory。
+ *
+ * 	应用：也就是说我们可以在应用中起多个 BeanFactory，然后可以将各个 BeanFactory 设置为父子关系
  */
 public interface HierarchicalBeanFactory extends BeanFactory {
 

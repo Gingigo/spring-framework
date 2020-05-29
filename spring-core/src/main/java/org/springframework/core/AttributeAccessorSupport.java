@@ -33,6 +33,10 @@ import org.springframework.util.StringUtils;
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @since 2.0
+ *
+ *
+ * 	类名: 属性访问器
+ * 	功能：为子类提供，实现了基本的属性访问功能。
  */
 @SuppressWarnings("serial")
 public abstract class AttributeAccessorSupport implements AttributeAccessor, Serializable {

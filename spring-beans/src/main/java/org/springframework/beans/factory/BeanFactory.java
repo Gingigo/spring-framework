@@ -113,6 +113,11 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization
  * @see DisposableBean#destroy
  * @see org.springframework.beans.factory.support.RootBeanDefinition#getDestroyMethodName
+ *
+ *
+ * 	类名：bean 工厂
+ * 	功能：BeanFactory 作为最顶层的一个接口类，它定义了 IOC 容器的基本功能规范
+ * 		如：生产 bean 和管理 bean
  */
 public interface BeanFactory {
 
@@ -136,6 +141,8 @@ public interface BeanFactory {
 	 * @return an instance of the bean
 	 * @throws NoSuchBeanDefinitionException if there is no bean with the specified name
 	 * @throws BeansException if the bean could not be obtained
+	 *
+	 *  根据bean的名字，获取IOC容器的实例
 	 */
 	Object getBean(String name) throws BeansException;
 
@@ -153,6 +160,8 @@ public interface BeanFactory {
 	 * @throws NoSuchBeanDefinitionException if there is no such bean definition
 	 * @throws BeanNotOfRequiredTypeException if the bean is not of the required type
 	 * @throws BeansException if the bean could not be created
+	 *
+	 *  根据 bean 的名字和 Class 类型来得到 bean 实例，增加了类型安全验证机制。
 	 */
 	<T> T getBean(String name, Class<T> requiredType) throws BeansException;
 
@@ -169,6 +178,7 @@ public interface BeanFactory {
 	 * the affected bean isn't a prototype
 	 * @throws BeansException if the bean could not be created
 	 * @since 2.5
+	 *  获取IOC容器中指定名称的Bean
 	 */
 	Object getBean(String name, Object... args) throws BeansException;
 

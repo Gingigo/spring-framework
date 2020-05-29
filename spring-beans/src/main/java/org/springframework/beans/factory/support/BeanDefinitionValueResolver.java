@@ -103,24 +103,30 @@ class BeanDefinitionValueResolver {
 	 * @param argName the name of the argument that the value is defined for
 	 * @param value the value object to resolve
 	 * @return the resolved object
+	 * 解析属性值，对注入类型进行转换
 	 */
 	@Nullable
 	public Object resolveValueIfNecessary(Object argName, @Nullable Object value) {
 		// We must check each value to see whether it requires a runtime reference
 		// to another bean to be resolved.
+		//对引用类型的属性进行解析
 		if (value instanceof RuntimeBeanReference) {
 			RuntimeBeanReference ref = (RuntimeBeanReference) value;
+			//调用引用类型属性的解析方法
 			return resolveReference(argName, ref);
 		}
+		//对属性值是引用容器中另一个 Bean 名称的解析
 		else if (value instanceof RuntimeBeanNameReference) {
 			String refName = ((RuntimeBeanNameReference) value).getBeanName();
 			refName = String.valueOf(doEvaluate(refName));
+			////从容器中获取指定名称的 Bean
 			if (!this.beanFactory.containsBean(refName)) {
 				throw new BeanDefinitionStoreException(
 						"Invalid bean name '" + refName + "' in bean reference for " + argName);
 			}
 			return refName;
 		}
+		//对 Bean 类型属性的解析，主要是 Bean 中的内部类
 		else if (value instanceof BeanDefinitionHolder) {
 			// Resolve BeanDefinitionHolder: contains BeanDefinition with name and aliases.
 			BeanDefinitionHolder bdHolder = (BeanDefinitionHolder) value;
@@ -133,6 +139,7 @@ class BeanDefinitionValueResolver {
 					ObjectUtils.getIdentityHexString(bd);
 			return resolveInnerBean(argName, innerBeanName, bd);
 		}
+		//对集合数组类型的属性解析
 		else if (value instanceof DependencyDescriptor) {
 			Set<String> autowiredBeanNames = new LinkedHashSet<>(4);
 			Object result = this.beanFactory.resolveDependency(
@@ -144,14 +151,17 @@ class BeanDefinitionValueResolver {
 			}
 			return result;
 		}
+		//获取数组的类型
 		else if (value instanceof ManagedArray) {
 			// May need to resolve contained runtime references.
 			ManagedArray array = (ManagedArray) value;
+			//获取数组元素的类型
 			Class<?> elementType = array.resolvedElementType;
 			if (elementType == null) {
 				String elementTypeName = array.getElementTypeName();
 				if (StringUtils.hasText(elementTypeName)) {
 					try {
+						//使用反射机制创建指定类型的对象
 						elementType = ClassUtils.forName(elementTypeName, this.beanFactory.getBeanClassLoader());
 						array.resolvedElementType = elementType;
 					}
@@ -162,26 +172,33 @@ class BeanDefinitionValueResolver {
 								"Error resolving array type for " + argName, ex);
 					}
 				}
+				//没有获取到数组的类型，也没有获取到数组元素的类型,则直接设置数组的类型为 Object
 				else {
 					elementType = Object.class;
 				}
 			}
+			//创建指定类型的数组
 			return resolveManagedArray(argName, (List<?>) value, elementType);
 		}
+		//解析 list 类型的属性值
 		else if (value instanceof ManagedList) {
 			// May need to resolve contained runtime references.
 			return resolveManagedList(argName, (List<?>) value);
 		}
+		//解析 set 类型的属性值
 		else if (value instanceof ManagedSet) {
 			// May need to resolve contained runtime references.
 			return resolveManagedSet(argName, (Set<?>) value);
 		}
+		//解析 map 类型的属性值
 		else if (value instanceof ManagedMap) {
 			// May need to resolve contained runtime references.
 			return resolveManagedMap(argName, (Map<?, ?>) value);
 		}
+		//解析 props 类型的属性值，props 其实就是 key 和 value 均为字符串的 map
 		else if (value instanceof ManagedProperties) {
 			Properties original = (Properties) value;
+			//创建一个拷贝，用于作为解析后的返回值
 			Properties copy = new Properties();
 			original.forEach((propKey, propValue) -> {
 				if (propKey instanceof TypedStringValue) {
@@ -199,15 +216,19 @@ class BeanDefinitionValueResolver {
 			});
 			return copy;
 		}
+		//解析字符串类型的属性值
 		else if (value instanceof TypedStringValue) {
 			// Convert value to target type here.
 			TypedStringValue typedStringValue = (TypedStringValue) value;
 			Object valueObject = evaluate(typedStringValue);
 			try {
+				//获取属性的目标类型
 				Class<?> resolvedTargetType = resolveTargetType(typedStringValue);
 				if (resolvedTargetType != null) {
+					//对目标类型的属性进行解析，递归调用
 					return this.typeConverter.convertIfNecessary(valueObject, resolvedTargetType);
 				}
+				//没有获取到属性的目标对象，则按 Object 类型返回
 				else {
 					return valueObject;
 				}

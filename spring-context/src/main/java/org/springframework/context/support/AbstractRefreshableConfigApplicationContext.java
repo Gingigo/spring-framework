@@ -72,6 +72,8 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	/**
 	 * Set the config locations for this application context.
 	 * <p>If not set, the implementation may use a default as appropriate.
+	 *
+	 * 功能：解析 Bean定义资源文件的路径，可以传出多个资源
 	 */
 	public void setConfigLocations(@Nullable String... locations) {
 		if (locations != null) {

@@ -24,6 +24,9 @@ import org.springframework.lang.Nullable;
  *
  * @author Rob Harrop
  * @since 2.0
+ *
+ * 	类名：属性访问器
+ * 	功能：访问对象元数据的抽象接口
  */
 public interface AttributeAccessor {
 

@@ -237,7 +237,9 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 		}
 		else {
 			// Can only load single resources by absolute URL.
+			// 获取要加载的资源
 			Resource resource = resourceLoader.getResource(location);
+			// 调用子类实现方法
 			int count = loadBeanDefinitions(resource);
 			if (actualResources != null) {
 				actualResources.add(resource);
@@ -254,6 +256,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 		Assert.notNull(locations, "Location array must not be null");
 		int count = 0;
 		for (String location : locations) {
+			// 分配路径处理策略
 			count += loadBeanDefinitions(location);
 		}
 		return count;
