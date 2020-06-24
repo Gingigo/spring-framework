@@ -498,16 +498,26 @@ public class DispatcherServlet extends FrameworkServlet {
 	/**
 	 * Initialize the strategy objects that this servlet uses.
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
+	 * 初始 spring MVC 九大组件
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		//多文件上传的组件
 		initMultipartResolver(context);
+		//初始化本地语言环境
 		initLocaleResolver(context);
+		//初始化模板处理器
 		initThemeResolver(context);
+		// handlerMapping (url -> controller )
 		initHandlerMappings(context);
+		//初始化参数适配器
 		initHandlerAdapters(context);
+		// 初始化异常拦截器
 		initHandlerExceptionResolvers(context);
+		//初始化视图预处理器
 		initRequestToViewNameTranslator(context);
+		//初始化视图转换器
 		initViewResolvers(context);
+		//FlashMap 管理器（用于重定向 缓存参数 如 request.getAttribute() 等...）
 		initFlashMapManager(context);
 	}
 
@@ -905,6 +915,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	/**
 	 * Exposes the DispatcherServlet-specific request attributes and delegates to {@link #doDispatch}
 	 * for the actual dispatching.
+	 * spring MVC 请求调用入口
 	 */
 	@Override
 	protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -940,6 +951,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		try {
+			//调用入口
 			doDispatch(request, response);
 		}
 		finally {
@@ -996,6 +1008,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @param request current HTTP request
 	 * @param response current HTTP response
 	 * @throws Exception in case of any kind of processing failure
+	 * 中央控制器,控制请求的转发
 	 */
 	protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpServletRequest processedRequest = request;
@@ -1009,17 +1022,24 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
+				// 1.检查是否是文件上传的请求
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
+				// 2.取得处理当前请求的 Controller,这里也称为 hanlder,处理器,
+				// 第一个步骤的意义就在这里体现了.这里并不是直接返回 Controller,
+				// 而是返回的 HandlerExecutionChain 请求处理器链对象,
+				// 该对象封装了 handler 和 interceptors.
 				mappedHandler = getHandler(processedRequest);
+				// 如果 handler 为空,则返回 404
 				if (mappedHandler == null) {
 					noHandlerFound(processedRequest, response);
 					return;
 				}
 
 				// Determine handler adapter for the current request.
+				//3. 获取处理 request 的处理器适配器 handler adapter
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
 				// Process last-modified header, if supported by the handler.
@@ -1037,12 +1057,14 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				// Actually invoke the handler.
+				//4.实际的处理器处理请求,返回结果视图对象
+				// handle -> HandlerAdapter.handle -> AbstractHandlerMethodAdapter.handleInternal
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
-
+				//5、结果视图对象的处理
 				applyDefaultViewName(processedRequest, mv);
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
@@ -1066,6 +1088,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		finally {
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				// Instead of postHandle and afterCompletion
+				// 请求成功响应之后的方法
 				if (mappedHandler != null) {
 					mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
 				}
@@ -1226,6 +1249,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>Tries all handler mappings in order.
 	 * @param request current HTTP request
 	 * @return the HandlerExecutionChain, or {@code null} if no handler could be found
+	 * 根据 url 获取处理请求的方法
 	 */
 	@Nullable
 	protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {

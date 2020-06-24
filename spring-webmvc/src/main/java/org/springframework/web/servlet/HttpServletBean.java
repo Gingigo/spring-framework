@@ -144,6 +144,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * invoke subclass initialization.
 	 * @throws ServletException if bean properties are invalid (or required
 	 * properties are missing), or if subclass initialization fails.
+	 * spring mvc 入口
 	 */
 	@Override
 	public final void init() throws ServletException {
@@ -152,7 +153,9 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
 		if (!pvs.isEmpty()) {
 			try {
+				//资源定位
 				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
+				//加载配置信息
 				ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
 				bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
 				initBeanWrapper(bw);
@@ -189,7 +192,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * <p>This default implementation is empty.
 	 * @throws ServletException if subclass initialization fails
 	 *
-	 *
+	 *	钩子方法
 	 * 	父类中 init() 调用，而父类只定义了方法，具体实现需要由子类进行重写
 	 */
 	protected void initServletBean() throws ServletException {

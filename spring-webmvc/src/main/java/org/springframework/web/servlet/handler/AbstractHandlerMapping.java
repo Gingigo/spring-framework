@@ -388,6 +388,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @param request current HTTP request
 	 * @return the corresponding handler instance, or the default handler
 	 * @see #getHandlerInternal
+	 * 根据request 返回 handler
 	 */
 	@Override
 	@Nullable
